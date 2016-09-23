@@ -65,19 +65,26 @@
           <th>Participant</th>
           <th>Stake</th>
           <th>To Win</th>
+          <th>Notes</th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="bet in $ctrl.bets.unsettled"
-            ng-if="$ctrl.bets.unsettled.length">
+            ng-if="$ctrl.bets.unsettled.length"
+            ng-class="bet.isRisky ? 'risky' : ''">
           <td>{{bet.customerId}}</td>
           <td>{{bet.eventId}}</td>
           <td>{{bet.participantId}}</td>
           <td>{{bet.stake}}</td>
           <td>{{bet.toWin}}</td>
+          <td class="notes">
+            <ul ng-if="bet.notes.length">
+              <li ng-repeat="note in bet.notes">{{note}}</li>
+            </ul>
+          </td>
         </tr>
         <tr ng-if="!$ctrl.bets.unsettled.length">
-          <td colspan="5">Upload unsettled bets CSV.</td>
+          <td colspan="6">Upload unsettled bets CSV.</td>
         </tr>
       </tbody>
     </table>

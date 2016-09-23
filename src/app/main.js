@@ -58,6 +58,7 @@ class MainController {
           $ctrl.analyzeWinningRates();
         } else {
           $ctrl.bets.unsettled = entries;
+          $ctrl.analyzeUnsettledBets();
         }
 
         $ctrl.$scope.$apply();
@@ -67,11 +68,10 @@ class MainController {
     }
   }
 
-  analyzeWinningRates() {
-    const unusualWinningRates = [];
+  getUserBets() {
     const userBets = {};
 
-    // create customer betting history
+    // create customer betting history.
     this.bets.settled.forEach((bet) => {
       if (!(bet.customerId in userBets)) {
         userBets[bet.customerId] = [];
@@ -80,7 +80,14 @@ class MainController {
       userBets[bet.customerId].push(bet);
     });
 
-    // calculate each customer's winning rate
+    return userBets;
+  }
+
+  analyzeWinningRates() {
+    const unusualWinningRates = [];
+    const userBets = this.getUserBets();
+
+    // calculate each customer's winning rate.
     Object.keys(userBets).forEach((customer) => {
       const customerBets = userBets[customer];
       const winningBets = customerBets.filter((bet) => {
@@ -88,17 +95,66 @@ class MainController {
       }).length;
       const winningRate = winningBets / customerBets.length;
 
-      console.log(winningRate, customer);
-
+      // flag customer's winning rate as unusual if greater than 60%.
       if (winningRate > 0.6) {
         unusualWinningRates.push({
-          customerId: customer,
+          customerId: parseInt(customer, 10),
           winningRate: winningRate
         });
       }
     });
 
     this.bets.unusualWinningRates = unusualWinningRates;
+
+    // re-analyze unsettled bets notes.
+    if (this.bets.unsettled.length) {
+      this.analyzeUnsettledBets();
+    }
+  }
+
+  analyzeUnsettledBets() {
+    const userBets = this.getUserBets();
+    const customersWithUnusualWinningRates = this.bets.unusualWinningRates.map((customer) => {
+      return customer.customerId;
+    });
+
+    // get customers' average bets.
+    const customerAverageBets = {};
+    Object.keys(userBets).forEach((customer) => {
+      const customerBets = userBets[customer];
+      let totalStake = 0;
+
+      customerBets.forEach((bet) => {
+        totalStake += bet.stake;
+      });
+
+      customerAverageBets[customer] = totalStake / customerBets.length;
+    });
+
+    // flag unsettled bets as risky.
+    this.bets.unsettled.forEach((bet) => {
+      bet.isRisky = false;
+      bet.notes = [];
+
+      // check if customer winning rate is unusual.
+      if (customersWithUnusualWinningRates.indexOf(bet.customerId) > -1) {
+        bet.isRisky = true;
+        bet.notes.push('Customer with unusual winning rate.');
+      }
+
+      // check if bet is more than 10 times the customer's average bet
+      // or 30 times the average bet and would win $1000 or more.
+      if (bet.customerId.toString() in customerAverageBets
+          && bet.stake > customerAverageBets[bet.customerId.toString()] * 10) {
+        bet.isRisky = true;
+
+        if (bet.stake > customerAverageBets[bet.customerId.toString()] * 30 && bet.toWin > 1000) {
+          bet.notes.push('Stake is 30 times higher than the customer\'s average bet and amount to be won is more than $1000.');
+        } else {
+          bet.notes.push('Stake is 10 times higher than the customer\'s average bet.');
+        }
+      }
+    });
   }
 }
 

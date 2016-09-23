@@ -6,6 +6,10 @@
   padding: 0;
 }
 
+ul, ol {
+  margin: 0 0 0 20px;
+}
+
 .container {
   &:after {
     clear: both;
@@ -33,6 +37,16 @@
     th, td {
       border: 1px solid #ccc;
       text-align: center;
+
+      &.notes {
+        text-align: left;
+      }
+    }
+
+    tr {
+      &.risky {
+        background: #f2dede;
+      }
     }
   }
 }
