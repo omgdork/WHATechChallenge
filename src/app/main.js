@@ -3,7 +3,8 @@ class MainController {
     this.$scope = $scope;
     this.bets = {
       settled: [],
-      unsettled: []
+      unsettled: [],
+      unusualWinningRates: []
     };
   }
 
@@ -38,11 +39,15 @@ class MainController {
         };
 
         for (let i = 1, length = allRows.length; i < length; i += 1) {
+          if (!allRows[i].length) { // if row is blank, skip.
+            continue;
+          }
+
           const rowData = allRows[i].split(',');
           const entry = {};
 
           for (let j = 0; j < headers.length; j += 1) {
-            entry[setEntryKey(headers[j])] = rowData[j];
+            entry[setEntryKey(headers[j])] = parseFloat(rowData[j]);
           }
 
           entries.push(entry);
@@ -50,6 +55,7 @@ class MainController {
 
         if (betType === 'settled') {
           $ctrl.bets.settled = entries;
+          $ctrl.analyzeWinningRates();
         } else {
           $ctrl.bets.unsettled = entries;
         }
@@ -59,6 +65,40 @@ class MainController {
 
       reader.readAsText(file);
     }
+  }
+
+  analyzeWinningRates() {
+    const unusualWinningRates = [];
+    const userBets = {};
+
+    // create customer betting history
+    this.bets.settled.forEach((bet) => {
+      if (!(bet.customerId in userBets)) {
+        userBets[bet.customerId] = [];
+      }
+
+      userBets[bet.customerId].push(bet);
+    });
+
+    // calculate each customer's winning rate
+    Object.keys(userBets).forEach((customer) => {
+      const customerBets = userBets[customer];
+      const winningBets = customerBets.filter((bet) => {
+        return bet.win > 0;
+      }).length;
+      const winningRate = winningBets / customerBets.length;
+
+      console.log(winningRate, customer);
+
+      if (winningRate > 0.6) {
+        unusualWinningRates.push({
+          customerId: customer,
+          winningRate: winningRate
+        });
+      }
+    });
+
+    this.bets.unusualWinningRates = unusualWinningRates;
   }
 }
 

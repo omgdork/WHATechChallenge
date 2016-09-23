@@ -30,6 +30,25 @@
         </tr>
       </tbody>
     </table>
+    <table ng-if="$ctrl.bets.settled.length">
+      <caption>Unusual Winning Rate</caption>
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Winning Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="data in $ctrl.bets.unusualWinningRates"
+            ng-if="$ctrl.bets.unusualWinningRates.length">
+          <td>{{data.customerId}}</td>
+          <td>{{data.winningRate | percentageFilter: 2}}</td>
+        </tr>
+        <tr ng-if="!$ctrl.bets.unusualWinningRates.length">
+          <td colspan="2">No unusual winning rates</td>
+        </tr>
+      </tbody>
+    </table>
   </section>
   <section class="bets unsettled">
     <div>
