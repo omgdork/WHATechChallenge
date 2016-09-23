@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+  font: normal 14px/1.8 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0;
+  outline: none;
+  padding: 0;
+}
+
+.container {
+  &:after {
+    clear: both;
+    content: '';
+    display: table;
+  }
+}
+
+.bets {
+  float: left;
+  padding: 10px;
+  width: 50%;
+
+  table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+
+    th, td {
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+  }
+}

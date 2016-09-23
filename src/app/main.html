@@ -1,0 +1,66 @@
+<div class="main-container">
+  <section class="bets settled">
+    <div>
+      <input type="file"
+             bet-type="settled"
+             file-upload-on-change="$ctrl.parseData">
+    </div>
+    <table>
+      <caption>Settled Bets</caption>
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Event</th>
+          <th>Participant</th>
+          <th>Stake</th>
+          <th>Win</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="bet in $ctrl.bets.settled"
+            ng-if="$ctrl.bets.settled.length">
+          <td>{{bet.customerId}}</td>
+          <td>{{bet.eventId}}</td>
+          <td>{{bet.participantId}}</td>
+          <td>{{bet.stake}}</td>
+          <td>{{bet.win}}</td>
+        </tr>
+        <tr ng-if="!$ctrl.bets.settled.length">
+          <td colspan="5">Upload settled bets CSV.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="bets unsettled">
+    <div>
+      <input type="file"
+             bet-type="unsettled"
+             file-upload-on-change="$ctrl.parseData">
+    </div>
+    <table>
+      <caption>Unsettled Bets</caption>
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Event</th>
+          <th>Participant</th>
+          <th>Stake</th>
+          <th>To Win</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="bet in $ctrl.bets.unsettled"
+            ng-if="$ctrl.bets.unsettled.length">
+          <td>{{bet.customerId}}</td>
+          <td>{{bet.eventId}}</td>
+          <td>{{bet.participantId}}</td>
+          <td>{{bet.stake}}</td>
+          <td>{{bet.toWin}}</td>
+        </tr>
+        <tr ng-if="!$ctrl.bets.unsettled.length">
+          <td colspan="5">Upload unsettled bets CSV.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
