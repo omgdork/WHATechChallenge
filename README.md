@@ -8,9 +8,9 @@
 
 ### How to Use
 1. Clone the repository on your machine.
-   1.1 On your command prompt, type: `git clone https://github.com/omgdork/WHATechChallenge.git`.
-   1.2 Run `npm install` to install dependencies.
-   1.3 Run `gulp serve` to start the server. `Go to http://localhost:3000`.
+  1. On your command prompt, type: `git clone https://github.com/omgdork/WHATechChallenge.git`.
+  2. Run `npm install` to install dependencies.
+  3. Run `gulp serve` to start the server. `Go to http://localhost:3000`.
 
 1. Download the CSV files included in the project (`Settled.csv`, `Unsettled.csv`).
 
